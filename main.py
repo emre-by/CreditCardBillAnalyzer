@@ -13,35 +13,35 @@ from dataAnalyzer import dataAnalyzer
 if __name__ == "__main__":
     print("Updating Credit Card Bills")
     os.getcwd()
-    newFolder = os.getcwd() + "\\Rechnungen"
-    
-    if os.path.exists(newFolder) != True:
-        os.mkdir(newFolder)
-        
-    a = emailManager()
+    NEW_FOLDER = os.getcwd() + "\\Rechnungen"
+
+    if not os.path.exists(NEW_FOLDER):
+        os.mkdir(NEW_FOLDER)
+
+    A = emailManager()
     print("Running creditCardBillManager")
-    manager = creditCardBillManager(newFolder)
-    
+    MANAGER = creditCardBillManager(NEW_FOLDER)
+
     print("Writing out the master data")
-    manager.exportMasterToCSV()
-    
+    MANAGER.exportMasterToCSV()
+
     print("Writing out the monthly data")
-    manager.exportMonthlyToCSV()
-    
-    plotter = dataAnalyzer(manager.generateMasterTable(), manager.generateMonthlyTable())
-    plotter.plotOverviewYearly()
-    print(f"Overall sum is: {plotter.monthlyTable.NewAmount.sum():1.2f}")
-    
+    MANAGER.exportMonthlyToCSV()
+
+    PLOTTER = dataAnalyzer(MANAGER.generateMasterTable(), MANAGER.generateMonthlyTable())
+    PLOTTER.plotOverviewYearly()
+    print(f"Overall sum is: {PLOTTER.monthlyTable.NewAmount.sum():1.2f}")
+
     #Get today's date
-    x = datetime.date.today()
-    k1 = plotter.monthlyTable.Date.dt.year == x.year
-    k2 = plotter.monthlyTable.Date.dt.month == x.month
-    k3 = plotter.monthlyTable.Date.dt.month == (x.month - 1)
-    
-    if len(plotter.monthlyTable[k1 & k2].NewAmount) != 0:
-        amount = plotter.monthlyTable.NewAmount[k1 & k2].values[0]
-        print(f"Final Bill is: {amount}")
+    DATE = datetime.date.today()
+    FILTER1 = PLOTTER.monthlyTable.Date.dt.year == DATE.year
+    FILTER2 = PLOTTER.monthlyTable.Date.dt.month == DATE.month
+    FILTER3 = PLOTTER.monthlyTable.Date.dt.month == (DATE.month - 1)
+
+    if len(PLOTTER.monthlyTable[FILTER1 & FILTER2].NewAmount) != 0:
+        AMOUNT = PLOTTER.monthlyTable.NewAmount[FILTER1 & FILTER2].values[0]
+        print(f"Final Bill is: {AMOUNT}")
     else:
-        amount = plotter.monthlyTable.NewAmount[k1 & k3].values[0]
-        print(f"Final Bill is: {amount}")
+        AMOUNT = PLOTTER.monthlyTable.NewAmount[FILTER1 & FILTER3].values[0]
+        print(f"Final Bill is: {AMOUNT}")
           
